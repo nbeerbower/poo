@@ -11,17 +11,17 @@ console.log("Loading " + modelFilename);
 const model = new LlamaModel({
     modelPath: path.join(__dirname, "models", modelFilename)
 });
-const context = new LlamaContext({model});
 
 // load the data
 const dataFilename = "RP.json";
 console.log("Loading " + dataFilename);
 const data = fs.readFileSync(path.join(__dirname, "data", dataFilename));
 const json = JSON.parse(data);
-const systemPrompt = ""
+const systemPrompt = "You are roleplaying with the User."
 
 // iterate over the data, prompt using input and consider the response as rejected
 for (let i = 0; i < json.length; i++) {
+	const context = new LlamaContext({model});
 	const session = new LlamaChatSession({
 		context,
 		systemPrompt,
@@ -30,7 +30,9 @@ for (let i = 0; i < json.length; i++) {
 	const q = json[i].input;
 	console.log("User: " + q);
 
-	const a = await session.prompt(q);
+	const a = await session.prompt(q, {
+		maxTokens: 512,
+	});
 	console.log("AI: " + a);
 
 	json[i].rejected = a;
