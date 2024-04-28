@@ -13,11 +13,11 @@ const model = new LlamaModel({
 });
 
 // load the data
-const dataFilename = "RP.json";
+const dataFilename = "bible.json";
 console.log("Loading " + dataFilename);
 const data = fs.readFileSync(path.join(__dirname, "data", dataFilename));
 const json = JSON.parse(data);
-const systemPrompt = "You are roleplaying with the User."
+const systemPrompt = "Recite the given verse from the Bible."
 
 // iterate over the data, prompt using input and consider the response as rejected
 for (let i = 0; i < json.length; i++) {
@@ -27,7 +27,7 @@ for (let i = 0; i < json.length; i++) {
 		systemPrompt,
 	});
 	console.log("Prompt " + (i + 1) + " of " + json.length);
-	const q = json[i].input;
+	const q = "Recite " + json[i].citation;
 	console.log("User: " + q);
 
 	const a = await session.prompt(q, {
@@ -39,6 +39,6 @@ for (let i = 0; i < json.length; i++) {
 }
 
 // save the data with a new name
-const newFilename = dataFilename.replace(".json", "-poo.json");
+const newFilename = dataFilename.replace(".json", "-dpo.json");
 console.log("Saving to " + newFilename);
 fs.writeFileSync(path.join(__dirname, "data", newFilename), JSON.stringify(json, null, 4));
